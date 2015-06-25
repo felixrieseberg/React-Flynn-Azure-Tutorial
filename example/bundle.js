@@ -19861,87 +19861,51 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
 
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-02"}, 
-                React.createElement("p", null, "Click on \"Default Directory\"")
+                React.createElement("p", null, "Click on \"Default Directory\" (or the one you want to use) and select the \"Applications\" navigation tab.")
             )
         );
 
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-03"}, 
-                React.createElement("p", null, "Click the \"ADD\" button at the bottom")
+                React.createElement("p", null, "Click the \"Add\" button at the bottom and select \"Add an application my organization is developing\". For the name, choose \"flynn-installer\" (or something else), then select \"Native Client Application\".")
             )
         );
 
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-04"}, 
-                React.createElement("p", null, "Click \"Add an application my organization is developing\"")
+                React.createElement("p", null, "As Redirect URI, use the value below, and create the application by hitting the checkmark in the lower right.")
             )
         );
 
+
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-05"}, 
-                React.createElement("p", null, "Give the application a name such as \"flynn-installer\""), 
-                React.createElement("p", null, "Select the \"NATIVE CLIENT APPLICATION\" option"), 
-                React.createElement("p", null, "Click the arrow in the bottom right of the modal to continue")
+                React.createElement("p", null, "Click the \"Configure\" tab and copy the \"Client ID\" into the input field below.")
             )
         );
 
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-06"}, 
-                React.createElement("p", null, "Set \"", React.createElement("input", {type: "text", value: redirectURI, "data-selectable": true, onClick: this.__handleRedirectURIInputClick, style: {
-                        width: Math.ceil(((redirectURI.length * 16) / 2) - 22) + 'px'
-                    }}), "\" as the \"REDIRECT URI\""), 
-                React.createElement("p", null, "Click the checkmark in the bottom right to continue")
+                React.createElement("p", null, "Next, we need to allow the created app to control your Azure account. Scroll to the bottom of the configuration page and click the green \"Add application\" button. In the popup, select the \"Windows Azure Service Management API\" and click the checkmark in the lower right.")
             )
         );
 
+
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-07"}, 
-                React.createElement("label", null, 
-                    React.createElement("p", null, "Click the \"CONFIGURE\" tab"), 
-                    React.createElement("p", null, "Copy the \"CLIENT ID\" into the input below")
-                    
-                )
+                React.createElement("p", null, "Click the \"Delegated Permissions\" dropdown and check \"Access Azure Service Management\". Then, save the configuration.")
             )
         );
 
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-08"}, 
-                React.createElement("p", null, "Scroll to the bottom of the configuration page"), 
-                React.createElement("p", null, "Click the green \"Add application\" button")
+                React.createElement("p", null, "Click on the back arrow button to go back to the \"APPLICATIONS\" tab click and the \"ENDPOINTS\" button at the bottom. Then, copy your OAuth 2.0 Token Endpoint into the input below.")
             )
         );
 
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-09"}, 
-                React.createElement("p", null, "Scroll to the bottom of the configuration page"), 
-                React.createElement("p", null, "Click the green \"Add application\" button")
-            )
-        );
-
-        tutorialSlides.push(
-            React.createElement("div", {id: "tutorial-10"}, 
-                React.createElement("p", null, "Click the \"Windows Azure Service ...\" option"), 
-                React.createElement("p", null, "Click the checkmark in the bottom right to continue")
-            )
-        );
-
-        tutorialSlides.push(
-            React.createElement("div", {id: "tutorial-11"}, 
-                React.createElement("p", null, "Click the \"Delegated Permissions\" dropdown"), 
-                React.createElement("p", null, "Check \"Access Azure Service Management\"")
-            )
-        );
-
-        tutorialSlides.push(
-            React.createElement("div", {id: "tutorial-12"}, 
-                React.createElement("p", null, "Click the \"Save\" button")
-            )
-        );
-
-        tutorialSlides.push(
-            React.createElement("div", {id: "tutorial-13"}, 
-                React.createElement("p", null, "Click on the back arrow button to go back to the \"APPLICATIONS\" tab click and the \"ENDPOINTS\" button at the bottom"), 
-                React.createElement("p", null, "Copy your OAuth 2.0 Token Endpoint into the input below")
+                React.createElement("p", null, "You now created an appliation able to control your Azure resources - one that this Flynn installer can use. You can move on by clicking \"Save\" below.")
             )
         );
 
@@ -19964,12 +19928,17 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
             React.createElement("div", null, 
                 intro, 
                 tutorialSlide, 
-                nextButton, 
 
                 React.createElement("div", {id: "azure-tutorial-inputs"}, 
-                    React.createElement("input", {name: "client_id", type: "text", placeholder: "CLIENT ID", style: inputStyles.clientId}), 
+                    React.createElement("label", {for: "redirectURI", style: inputStyles.redirectURI}, "Redirect URI"), 
+                    React.createElement("input", {name: "redirectURI", "data-selectable": true, type: "text", value: redirectURI, onClick: this.__handleRedirectURIInputClick, style: inputStyles.redirectURI}), 
+                    React.createElement("label", {for: "client_id", style: inputStyles.clientId}, "App Client ID"), 
+                    React.createElement("input", {name: "client_id", type: "text", placeholder: "ab7c1052-1fe7-4642-91f6-065c94de25d4", style: inputStyles.clientId}), 
+                    React.createElement("label", {for: "endpoint", style: inputStyles.endpoint}, "OAuth 2.0 Token Endpoint"), 
                     React.createElement("input", {name: "endpoint", type: "text", placeholder: "https://login.microsoftonline.com/{your-uid}/oauth2/token?api-version=1.0", style: inputStyles.endpoint})
-                )
+                ), 
+
+                nextButton
             )
         );
     },
@@ -19987,6 +19956,10 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
             s.tutorialSlide = s.tutorialSlide + 1;
         }
 
+        s.showRedirectURI = (s.tutorialSlide === 3) ? true : false;
+        s.showClientIDInput = (s.tutorialSlide === 4) ? true : false;
+        s.showEndpointInput = (s.tutorialSlide === 7) ? true : false;
+
         this.setState(s);
     },
 
@@ -19996,10 +19969,17 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
 
     __getInputStyles: function () {
         var s = this.state,
+            uri = window.location.protocol + '//'+ window.location.host + '/oauth/azure',
+            redirectURI = (s.skipTutorial || s.showRedirectURI) ? {
+                width: Math.ceil(((uri.length * 16) / 2) - 22) + 'px'
+            } : {
+                display: 'none', visibility: 'collapse'
+            },
             clientId = (s.skipTutorial || s.showClientIDInput) ? {} : {display: 'none', visibility: 'collapse'},
             endpoint = (s.skipTutorial || s.showEndpointInput) ? {} : {display: 'none', visibility: 'collapse'};
 
         return {
+            redirectURI: redirectURI,
             clientId: clientId,
             endpoint: endpoint
         }

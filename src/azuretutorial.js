@@ -41,87 +41,51 @@ var AzureCreateAppTutorial = React.createClass({
 
         tutorialSlides.push(
             <div id="tutorial-02">
-                <p>Click on "Default Directory"</p>
+                <p>Click on "Default Directory" (or the one you want to use) and select the "Applications" navigation tab.</p>
             </div>
         );
 
         tutorialSlides.push(
             <div id="tutorial-03">
-                <p>Click the "ADD" button at the bottom</p>
+                <p>Click the "Add" button at the bottom and select "Add an application my organization is developing". For the name, choose "flynn-installer" (or something else), then select "Native Client Application".</p>
             </div>
         );
 
         tutorialSlides.push(
             <div id="tutorial-04">
-                <p>Click "Add an application my organization is developing"</p>
+                <p>As Redirect URI, use the value below, and create the application by hitting the checkmark in the lower right.</p>
             </div>
         );
 
+
         tutorialSlides.push(
             <div id="tutorial-05">
-                <p>Give the application a name such as "flynn-installer"</p>
-                <p>Select the "NATIVE CLIENT APPLICATION" option</p>
-                <p>Click the arrow in the bottom right of the modal to continue</p>
+                <p>Click the "Configure" tab and copy the "Client ID" into the input field below.</p>
             </div>
         );
 
         tutorialSlides.push(
             <div id="tutorial-06">
-                <p>Set "<input type="text" value={redirectURI} data-selectable onClick={this.__handleRedirectURIInputClick} style={{
-                        width: Math.ceil(((redirectURI.length * 16) / 2) - 22) + 'px'
-                    }} />" as the "REDIRECT URI"</p>
-                <p>Click the checkmark in the bottom right to continue</p>
+                <p>Next, we need to allow the created app to control your Azure account. Scroll to the bottom of the configuration page and click the green "Add application" button. In the popup, select the "Windows Azure Service Management API" and click the checkmark in the lower right.</p>
             </div>
         );
 
+
         tutorialSlides.push(
             <div id="tutorial-07">
-                <label>
-                    <p>Click the "CONFIGURE" tab</p>
-                    <p>Copy the "CLIENT ID" into the input below</p>
-                    
-                </label>
+                <p>Click the "Delegated Permissions" dropdown and check "Access Azure Service Management". Then, save the configuration.</p>
             </div>
         );
 
         tutorialSlides.push(
             <div id="tutorial-08">
-                <p>Scroll to the bottom of the configuration page</p>
-                <p>Click the green "Add application" button</p>
+                <p>Click on the back arrow button to go back to the "APPLICATIONS" tab click and the "ENDPOINTS" button at the bottom. Then, copy your OAuth 2.0 Token Endpoint into the input below.</p>
             </div>
         );
 
         tutorialSlides.push(
             <div id="tutorial-09">
-                <p>Scroll to the bottom of the configuration page</p>
-                <p>Click the green "Add application" button</p>
-            </div>
-        );
-
-        tutorialSlides.push(
-            <div id="tutorial-10">
-                <p>Click the "Windows Azure Service ..." option</p>
-                <p>Click the checkmark in the bottom right to continue</p>
-            </div>
-        );
-
-        tutorialSlides.push(
-            <div id="tutorial-11">
-                <p>Click the "Delegated Permissions" dropdown</p>
-                <p>Check "Access Azure Service Management"</p>
-            </div>
-        );
-
-        tutorialSlides.push(
-            <div id="tutorial-12">
-                <p>Click the "Save" button</p>
-            </div>
-        );
-
-        tutorialSlides.push(
-            <div id="tutorial-13">
-                <p>Click on the back arrow button to go back to the "APPLICATIONS" tab click and the "ENDPOINTS" button at the bottom</p>
-                <p>Copy your OAuth 2.0 Token Endpoint into the input below</p>
+                <p>You now created an appliation able to control your Azure resources - one that this Flynn installer can use. You can move on by clicking "Save" below.</p>
             </div>
         );
 
@@ -144,12 +108,17 @@ var AzureCreateAppTutorial = React.createClass({
             <div>
                 {intro}
                 {tutorialSlide}
-                {nextButton}
 
                 <div id="azure-tutorial-inputs">
-                    <input name="client_id" type="text" placeholder="CLIENT ID" style={inputStyles.clientId} />
+                    <label for="redirectURI" style={inputStyles.redirectURI}>Redirect URI</label>
+                    <input name="redirectURI" data-selectable type="text" value={redirectURI} onClick={this.__handleRedirectURIInputClick}  style={inputStyles.redirectURI} />
+                    <label for="client_id" style={inputStyles.clientId}>App Client ID</label>
+                    <input name="client_id" type="text" placeholder="ab7c1052-1fe7-4642-91f6-065c94de25d4" style={inputStyles.clientId} />
+                    <label for="endpoint" style={inputStyles.endpoint}>OAuth 2.0 Token Endpoint</label>
                     <input name="endpoint" type="text" placeholder="https://login.microsoftonline.com/{your-uid}/oauth2/token?api-version=1.0" style={inputStyles.endpoint} />
                 </div>
+
+                {nextButton}
             </div>
         );
     },
@@ -167,6 +136,10 @@ var AzureCreateAppTutorial = React.createClass({
             s.tutorialSlide = s.tutorialSlide + 1;
         }
 
+        s.showRedirectURI = (s.tutorialSlide === 3) ? true : false;
+        s.showClientIDInput = (s.tutorialSlide === 4) ? true : false;
+        s.showEndpointInput = (s.tutorialSlide === 7) ? true : false;
+
         this.setState(s);
     },
 
@@ -176,10 +149,17 @@ var AzureCreateAppTutorial = React.createClass({
 
     __getInputStyles: function () {
         var s = this.state,
+            uri = window.location.protocol + '//'+ window.location.host + '/oauth/azure',
+            redirectURI = (s.skipTutorial || s.showRedirectURI) ? {
+                width: Math.ceil(((uri.length * 16) / 2) - 22) + 'px'
+            } : {
+                display: 'none', visibility: 'collapse'
+            },
             clientId = (s.skipTutorial || s.showClientIDInput) ? {} : {display: 'none', visibility: 'collapse'},
             endpoint = (s.skipTutorial || s.showEndpointInput) ? {} : {display: 'none', visibility: 'collapse'};
 
         return {
+            redirectURI: redirectURI,
             clientId: clientId,
             endpoint: endpoint
         }
