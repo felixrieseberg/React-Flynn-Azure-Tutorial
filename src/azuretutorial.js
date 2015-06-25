@@ -31,7 +31,7 @@ var AzureCreateAppTutorial = React.createClass({
             tutorialSlides = [''],
             inputStyles = this.__getInputStyles(),
             s = this.state,
-            intro, nextButton, tutorialSlide;
+            intro, pagination = {}, tutorialSlide;
 
         tutorialSlides.push(
             <div id="tutorial-01">
@@ -85,14 +85,14 @@ var AzureCreateAppTutorial = React.createClass({
 
         tutorialSlides.push(
             <div id="tutorial-09">
-                <p>You now created an appliation able to control your Azure resources - one that this Flynn installer can use. You can move on by clicking "Save" below.</p>
+                <p>You now created an appliation able to control your Azure resources - one that this Flynn installer can use. You can move on by clicking "Continue" below.</p>
             </div>
         );
 
         intro = (
             <div id="azure-tutorial-intro">
                 <p>To use the installer, you first need to create an Azure application able to controll your resources on Flynns behalf.</p>
-                <button onClick={this.__handleAdvanceTutorialClick}>Walk me through it</button>
+                <button onClick={this.__handleAdvanceTutorialClick}>Walk me through it</button><br />
                 <button onClick={this.__skipTutorial}>Skip tutorial</button>
             </div>
         );
@@ -100,9 +100,10 @@ var AzureCreateAppTutorial = React.createClass({
         intro = (s.tutorialSlide || s.skipTutorial) ? null : intro;
         tutorialSlide = (s.tutorialSlide) ? tutorialSlides[s.tutorialSlide] : null;
 
-        if (s.tutorialSlide && s.tutorialSlide < 13) {
-            nextButton = <a id="azureTutNext" onClick={this.__handleAdvanceTutorialClick} href="#">Next</a>
-        }
+        if (s.tutorialSlide) {
+            pagination.prev = (s.tutorialSlide > 1) ? <a id="azureTutPrev" onClick={this.__handleAdvanceTutorialClick} href="#">Back</a> : '';
+            pagination.next = (s.tutorialSlide < 9) ? <a id="azureTutNext" onClick={this.__handleAdvanceTutorialClick} href="#">Next</a> : '';
+        } 
 
         return (
             <div>
@@ -111,14 +112,15 @@ var AzureCreateAppTutorial = React.createClass({
 
                 <div id="azure-tutorial-inputs">
                     <label for="redirectURI" style={inputStyles.redirectURI}>Redirect URI</label>
-                    <input name="redirectURI" data-selectable type="text" value={redirectURI} onClick={this.__handleRedirectURIInputClick}  style={inputStyles.redirectURI} />
+                    <input name="redirectURI" type="text" value={redirectURI} onClick={this.__handleRedirectURIInputClick}  style={inputStyles.redirectURI} />
                     <label for="client_id" style={inputStyles.clientId}>App Client ID</label>
                     <input name="client_id" type="text" placeholder="ab7c1052-1fe7-4642-91f6-065c94de25d4" style={inputStyles.clientId} />
                     <label for="endpoint" style={inputStyles.endpoint}>OAuth 2.0 Token Endpoint</label>
                     <input name="endpoint" type="text" placeholder="https://login.microsoftonline.com/{your-uid}/oauth2/token?api-version=1.0" style={inputStyles.endpoint} />
                 </div>
 
-                {nextButton}
+                {pagination.prev}
+                {pagination.next}
             </div>
         );
     },
@@ -127,18 +129,19 @@ var AzureCreateAppTutorial = React.createClass({
         // this.state.styleEl.commit();
     },
 
-    __handleAdvanceTutorialClick: function () {
+    __handleAdvanceTutorialClick: function (e) {
         var s = this.state;
 
         if (!s.tutorialSlide || s.tutorialSlide >= 13) {
             s.tutorialSlide = 1;
         } else {
-            s.tutorialSlide = s.tutorialSlide + 1;
+            s.tutorialSlide = (e.target.id === 'azureTutNext') ? s.tutorialSlide + 1 : s.tutorialSlide - 1;
         }
 
-        s.showRedirectURI = (s.tutorialSlide === 3) ? true : false;
-        s.showClientIDInput = (s.tutorialSlide === 4) ? true : false;
-        s.showEndpointInput = (s.tutorialSlide === 7) ? true : false;
+        s.showRedirectURI = (s.tutorialSlide === 4);
+        s.showClientIDInput = (s.tutorialSlide === 5);
+        s.showEndpointInput = (s.tutorialSlide === 8);
+        s.done = (s.s.tutorialSlide === 9 || s.skipTutorial);
 
         this.setState(s);
     },
@@ -150,13 +153,9 @@ var AzureCreateAppTutorial = React.createClass({
     __getInputStyles: function () {
         var s = this.state,
             uri = window.location.protocol + '//'+ window.location.host + '/oauth/azure',
-            redirectURI = (s.skipTutorial || s.showRedirectURI) ? {
-                width: Math.ceil(((uri.length * 16) / 2) - 22) + 'px'
-            } : {
-                display: 'none', visibility: 'collapse'
-            },
-            clientId = (s.skipTutorial || s.showClientIDInput) ? {} : {display: 'none', visibility: 'collapse'},
-            endpoint = (s.skipTutorial || s.showEndpointInput) ? {} : {display: 'none', visibility: 'collapse'};
+            redirectURI = (s.skipTutorial || s.showRedirectURI) ? {margin-bottom: '5px'} : {display: 'none', visibility: 'collapse'},
+            clientId = (s.skipTutorial || s.showClientIDInput) ? {margin-bottom: '5px'} : {display: 'none', visibility: 'collapse'},
+            endpoint = (s.skipTutorial || s.showEndpointInput) ? {margin-bottom: '5px'} : {display: 'none', visibility: 'collapse'};
 
         return {
             redirectURI: redirectURI,

@@ -19851,7 +19851,7 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
             tutorialSlides = [''],
             inputStyles = this.__getInputStyles(),
             s = this.state,
-            intro, nextButton, tutorialSlide;
+            intro, pagination = {}, tutorialSlide;
 
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-01"}, 
@@ -19912,7 +19912,7 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
         intro = (
             React.createElement("div", {id: "azure-tutorial-intro"}, 
                 React.createElement("p", null, "To use the installer, you first need to create an Azure application able to controll your resources on Flynns behalf."), 
-                React.createElement("button", {onClick: this.__handleAdvanceTutorialClick}, "Walk me through it"), 
+                React.createElement("button", {onClick: this.__handleAdvanceTutorialClick}, "Walk me through it"), React.createElement("br", null), 
                 React.createElement("button", {onClick: this.__skipTutorial}, "Skip tutorial")
             )
         );
@@ -19920,9 +19920,10 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
         intro = (s.tutorialSlide || s.skipTutorial) ? null : intro;
         tutorialSlide = (s.tutorialSlide) ? tutorialSlides[s.tutorialSlide] : null;
 
-        if (s.tutorialSlide && s.tutorialSlide < 13) {
-            nextButton = React.createElement("a", {id: "azureTutNext", onClick: this.__handleAdvanceTutorialClick, href: "#"}, "Next")
-        }
+        if (s.tutorialSlide) {
+            pagination.prev = (s.tutorialSlide > 1) ? React.createElement("a", {id: "azureTutPrev", onClick: this.__handleAdvanceTutorialClick, href: "#"}, "Back") : '';
+            pagination.next = (s.tutorialSlide < 9) ? React.createElement("a", {id: "azureTutNext", onClick: this.__handleAdvanceTutorialClick, href: "#"}, "Next") : '';
+        } 
 
         return (
             React.createElement("div", null, 
@@ -19931,14 +19932,15 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
 
                 React.createElement("div", {id: "azure-tutorial-inputs"}, 
                     React.createElement("label", {for: "redirectURI", style: inputStyles.redirectURI}, "Redirect URI"), 
-                    React.createElement("input", {name: "redirectURI", "data-selectable": true, type: "text", value: redirectURI, onClick: this.__handleRedirectURIInputClick, style: inputStyles.redirectURI}), 
+                    React.createElement("input", {name: "redirectURI", type: "text", value: redirectURI, onClick: this.__handleRedirectURIInputClick, style: inputStyles.redirectURI}), 
                     React.createElement("label", {for: "client_id", style: inputStyles.clientId}, "App Client ID"), 
                     React.createElement("input", {name: "client_id", type: "text", placeholder: "ab7c1052-1fe7-4642-91f6-065c94de25d4", style: inputStyles.clientId}), 
                     React.createElement("label", {for: "endpoint", style: inputStyles.endpoint}, "OAuth 2.0 Token Endpoint"), 
                     React.createElement("input", {name: "endpoint", type: "text", placeholder: "https://login.microsoftonline.com/{your-uid}/oauth2/token?api-version=1.0", style: inputStyles.endpoint})
                 ), 
 
-                nextButton
+                pagination.prev, 
+                pagination.next
             )
         );
     },
@@ -19947,18 +19949,18 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
         // this.state.styleEl.commit();
     },
 
-    __handleAdvanceTutorialClick: function () {
+    __handleAdvanceTutorialClick: function (e) {
         var s = this.state;
 
         if (!s.tutorialSlide || s.tutorialSlide >= 13) {
             s.tutorialSlide = 1;
         } else {
-            s.tutorialSlide = s.tutorialSlide + 1;
+            s.tutorialSlide = (e.target.id === 'azureTutNext') ? s.tutorialSlide + 1 : s.tutorialSlide - 1;
         }
 
-        s.showRedirectURI = (s.tutorialSlide === 3) ? true : false;
-        s.showClientIDInput = (s.tutorialSlide === 4) ? true : false;
-        s.showEndpointInput = (s.tutorialSlide === 7) ? true : false;
+        s.showRedirectURI = (s.tutorialSlide === 4) ? true : false;
+        s.showClientIDInput = (s.tutorialSlide === 5) ? true : false;
+        s.showEndpointInput = (s.tutorialSlide === 8) ? true : false;
 
         this.setState(s);
     },
