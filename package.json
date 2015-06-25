@@ -1,0 +1,44 @@
+{
+    "name": "react-flynn-azure-tutorial",
+    "description": "An Azure tutorial for the Flynn installer",
+    "version": "0.1.0",
+    "license": "MIT",
+    "repository": "felixrieseberg/React-Flynn-Azure-Tutorial",
+    "maintainers": [{
+        "name": "Felix Rieseberg",
+        "email": "felix@felixrieseberg.com",
+        "web": "http://www.felixrieseberg.com"
+    }],
+    "devDependencies": {
+        "browserify": "^9.0.3",
+        "browserify-shim": "^3.8.3",
+        "del": "^1.1.1",
+        "gulp": "^3.8.11",
+        "gulp-header": "^1.2.2",
+        "gulp-jshint": "^1.9.4",
+        "gulp-plumber": "^1.0.0",
+        "gulp-react": "^3.0.1",
+        "gulp-rename": "^1.2.0",
+        "gulp-streamify": "0.0.5",
+        "gulp-uglify": "^1.1.0",
+        "gulp-util": "^3.0.4",
+        "jshint-stylish": "^1.0.1",
+        "react": ">=0.13.0",
+        "tape": "^3.5.0",
+        "vinyl-source-stream": "^1.1.0",
+        "multer": "^0.1.8",
+        "express": "^4.12.3",
+        "body-parser": "^1.12.4"
+    },
+    "scripts": {
+        "debug": "gulp --debug",
+        "dist": "gulp bundle-js --production --release && gulp bundle-js --development --release",
+        "watch": "gulp"
+    },
+    "browserify-shim": {
+        "react": "global:React",
+        "react/addons": "global:React"
+    },
+    "main": "./lib/azuretutorial.js",
+    "standalone": "React-Flynn-Azure-Tutorial"
+}
