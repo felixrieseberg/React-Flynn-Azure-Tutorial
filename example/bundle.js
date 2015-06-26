@@ -19905,7 +19905,7 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
 
         tutorialSlides.push(
             React.createElement("div", {id: "tutorial-09"}, 
-                React.createElement("p", null, "You now created an appliation able to control your Azure resources - one that this Flynn installer can use. You can move on by clicking \"Save\" below.")
+                React.createElement("p", null, "You now created an appliation able to control your Azure resources - one that this Flynn installer can use. You can move on by clicking \"Continue\" below.")
             )
         );
 
@@ -19958,9 +19958,10 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
             s.tutorialSlide = (e.target.id === 'azureTutNext') ? s.tutorialSlide + 1 : s.tutorialSlide - 1;
         }
 
-        s.showRedirectURI = (s.tutorialSlide === 4) ? true : false;
-        s.showClientIDInput = (s.tutorialSlide === 5) ? true : false;
-        s.showEndpointInput = (s.tutorialSlide === 8) ? true : false;
+        s.showRedirectURI = (s.tutorialSlide === 4);
+        s.showClientIDInput = (s.tutorialSlide === 5);
+        s.showEndpointInput = (s.tutorialSlide === 8);
+        s.done = (s.s.tutorialSlide === 9 || s.skipTutorial);
 
         this.setState(s);
     },
@@ -19971,14 +19972,9 @@ var AzureCreateAppTutorial = React.createClass({displayName: "AzureCreateAppTuto
 
     __getInputStyles: function () {
         var s = this.state,
-            uri = window.location.protocol + '//'+ window.location.host + '/oauth/azure',
-            redirectURI = (s.skipTutorial || s.showRedirectURI) ? {
-                width: Math.ceil(((uri.length * 16) / 2) - 22) + 'px'
-            } : {
-                display: 'none', visibility: 'collapse'
-            },
-            clientId = (s.skipTutorial || s.showClientIDInput) ? {} : {display: 'none', visibility: 'collapse'},
-            endpoint = (s.skipTutorial || s.showEndpointInput) ? {} : {display: 'none', visibility: 'collapse'};
+            redirectURI = (s.skipTutorial || s.showRedirectURI) ? {margin: '5px'} : {display: 'none', visibility: 'collapse'},
+            clientId = (s.skipTutorial || s.showClientIDInput) ? {margin: '5px'} : {display: 'none', visibility: 'collapse'},
+            endpoint = (s.skipTutorial || s.showEndpointInput) ? {margin: '5px'} : {display: 'none', visibility: 'collapse'};
 
         return {
             redirectURI: redirectURI,
