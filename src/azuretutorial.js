@@ -2,20 +2,27 @@
 
 var React = require('react');
 
-var tutorialSlides = [''];
+// Provided by other Flynn components
+// import AssetPaths from './asset-paths';
+// import ExternalLink from './external-link';
+// import Colors from './css/colors';
+// import Sheet from './css/sheet';
+// import InputSelection from './input-selection';
+
+var tutorialSlides = [];
 
 tutorialSlides.push(
-    <div id="tutorial-01">
+    <div >
         <img src={AssetPaths["azure-1.gif"]} style={{
                 width: 699,
                 height: 378
             }} /> 
-        <p><a href="https://manage.windowsazure.com">Sign into the Azure Management Portal</a> and select the "Active Directory" navigation item on the left.</p>
+        <p><ExternalLink href="https://manage.windowsazure.com">Sign into the Azure Management Portal</ExternalLink> and select the "Active Directory" navigation item on the left.</p>
     </div>
 );
 
 tutorialSlides.push(
-    <div id="tutorial-02">
+    <div>
         <img src={AssetPaths["azure-2.gif"]} style={{
                 width: 699,
                 height: 378
@@ -25,7 +32,7 @@ tutorialSlides.push(
 );
 
 tutorialSlides.push(
-    <div id="tutorial-03">
+    <div>
     <img src={AssetPaths["azure-3.gif"]} style={{
                 width: 699,
                 height: 378
@@ -35,7 +42,7 @@ tutorialSlides.push(
 );
 
 tutorialSlides.push(
-    <div id="tutorial-04">
+    <div>
     <img src={AssetPaths["azure-4.gif"]} style={{
                 width: 699,
                 height: 378
@@ -45,7 +52,7 @@ tutorialSlides.push(
 );
 
 tutorialSlides.push(
-    <div id="tutorial-05">
+    <div>
     <img src={AssetPaths["azure-5.gif"]} style={{
                 width: 699,
                 height: 378
@@ -55,7 +62,7 @@ tutorialSlides.push(
 );
 
 tutorialSlides.push(
-    <div id="tutorial-06">
+    <div>
         <img src={AssetPaths["azure-6.gif"]} style={{
                 width: 699,
                 height: 402
@@ -65,7 +72,7 @@ tutorialSlides.push(
 );
 
 tutorialSlides.push(
-    <div id="tutorial-07">
+    <div>
         <img src={AssetPaths["azure-7.gif"]} style={{
                 width: 699,
                 height: 402
@@ -75,7 +82,7 @@ tutorialSlides.push(
 );
 
 tutorialSlides.push(
-    <div id="tutorial-08">
+    <div>
         <img src={AssetPaths["azure-8.gif"]} style={{
                 width: 699,
                 height: 472
@@ -85,7 +92,7 @@ tutorialSlides.push(
 );
 
 tutorialSlides.push(
-    <div id="tutorial-09">
+    <div>
         <img src={AssetPaths["azure-done.png"]} style={{
                 width: 699,
                 height: 256
@@ -101,7 +108,7 @@ var AzureCreateAppTutorial = React.createClass({
             selectors: [
                 ['> li > img', {
                     verticalAlign: 'text-top',
-                    border: '1px solid #333'
+                    border: '1px solid ' + Colors.almostBlackColor
                 }],
                 ['input[data-selectable]', {
                     backgroundColor: 'transparent',
@@ -138,14 +145,14 @@ var AzureCreateAppTutorial = React.createClass({
             </div>
         );
 
-        intro = (state.tutorialSlide || state.skipTutorial) ? null : intro;
-        tutorialSlide = (state.tutorialSlide) ? tutorialSlides[state.tutorialSlide] : null;
+        intro = (state.tutorialSlide !== null || state.skipTutorial) ? null : intro;
+        tutorialSlide = (state.tutorialSlide !== null) ? tutorialSlides[state.tutorialSlide] : null;
 
-        if (state.tutorialSlide || state.skipTutorial) {
-            pagination.prev = (state.skipTutorial && !state.tutorialSlide) ? <button id="azureTutPrev" onClick={this.__skipTutorial}>Back</button> : '';
-            pagination.prev = (state.tutorialSlide > 1) ? <button id="azureTutPrev" onClick={this.__handleGoBackTutorialClick}>Back</button> : pagination.prev;
-            pagination.next = (state.tutorialSlide < 9) ? <button id="azureTutNext" onClick={this.__handleAdvanceTutorialClick}>Next</button> : '';
-            pagination.submit = (state.skipTutorial || state.tutorialSlide === 9) ? <button type="submit" style={{margin: "0 0 0 503px"}}>Authenticate</button> : '';
+        if (state.tutorialSlide !== null || state.skipTutorial) {
+            pagination.prev = (state.skipTutorial && state.tutorialSlide !== null) ? <button onClick={this.__skipTutorial}>Back</button> : '';
+            pagination.prev = (state.tutorialSlide > 0) ? <button onClick={this.__handleGoBackTutorialClick}>Back</button> : pagination.prev;
+            pagination.next = (state.tutorialSlide < 8) ? <button onClick={this.__handleAdvanceTutorialClick}>Next</button> : '';
+            pagination.submit = (state.skipTutorial || state.tutorialSlide === 8) ? <button type="submit" style={{margin: "0 0 0 503px"}}>Authenticate</button> : '';
         }
 
         return (
@@ -157,7 +164,7 @@ var AzureCreateAppTutorial = React.createClass({
                     <label htmlFor="redirectURI" style={inputStyles.redirectURI}>Redirect URI</label>
                     <input ref="redirectURI" name="redirectURI" type="text" value={redirectURI} onClick={this.__handleRedirectURIInputClick}  style={inputStyles.redirectURI} />
                     <label htmlFor="client_id" style={inputStyles.clientId}>App Client ID</label>
-                    <input ref="client_id" name="client_id" type="text" placeholder="ab7c1052-1fe7-4642-91f6-065c94de25d4" style={inputStyles.clientId} />
+                    <input ref="clientID" name="client_id" type="text" placeholder="ab7c1052-1fe7-4642-91f6-065c94de25d4" style={inputStyles.clientId} />
                     <label htmlFor="endpoint" style={inputStyles.endpoint}>OAuth 2.0 Token Endpoint</label>
                     <input ref="endpoint" name="endpoint" type="text" placeholder="https://login.microsoftonline.com/{your-uid}/oauth2/token?api-version=1.0" style={inputStyles.endpoint} />
                 </div>
@@ -174,29 +181,31 @@ var AzureCreateAppTutorial = React.createClass({
     /**
      * Modifies the state's `tutorialSlide` variable, advancing in the tutorial's walkthrough.
      */
-    __handleAdvanceTutorialClick: function () {
+    __handleAdvanceTutorialClick: function (e) {
         var state = this.state;
 
-        console.log(this.refs);
+        if (e.cancelable) {
+            e.preventDefault();
+        }
 
         // Validate Inputs
-        if (state.tutorialSlide === 5 && this.refs.client_id.getDOMNode().value === '') {
-            this.refs.client_id.getDOMNode().focus();
+        if (state.tutorialSlide === 4 && this.refs.clientID.getDOMNode().value === '') {
+            this.refs.clientID.getDOMNode().focus();
             return;
-        } else if (state.tutorialSlide === 8 && this.refs.client_id.getDOMNode().value === '') {
-            this.refs.client_id.getDOMNode().focus();
+        } else if (state.tutorialSlide === 7 && this.refs.endpoint.getDOMNode().value === '') {
+            this.refs.endpoint.getDOMNode().focus();
             return;
         }
 
-        if (!state.tutorialSlide || state.tutorialSlide >= tutorialSlides.length) {
-            state.tutorialSlide = 1;
+        if (state.tutorialSlide === null || state.tutorialSlide >= tutorialSlides.length) {
+            state.tutorialSlide = 0;
         } else {
             state.tutorialSlide = state.tutorialSlide + 1;
         }
 
-        state.showRedirectURI = (state.tutorialSlide === 4);
-        state.showClientIDInput = (state.tutorialSlide === 5);
-        state.showEndpointInput = (state.tutorialSlide === 8);
+        state.showRedirectURI = (state.tutorialSlide === 3);
+        state.showClientIDInput = (state.tutorialSlide === 4);
+        state.showEndpointInput = (state.tutorialSlide === 7);
         state.done = (state.tutorialSlide === tutorialSlides.length || state.skipTutorial);
 
         this.setState(state);
@@ -205,14 +214,18 @@ var AzureCreateAppTutorial = React.createClass({
     /**
      * Modifies the state's `tutorialSlide` variable, stepping back in the tutorial's walkthrough.
      */
-    __handleGoBackTutorialClick: function () {
+    __handleGoBackTutorialClick: function (e) {
         var state = this.state;
+
+        if (e.cancelable) {
+            e.preventDefault();
+        }
 
         state.tutorialSlide = state.tutorialSlide - 1;
 
-        state.showRedirectURI = (state.tutorialSlide === 4);
-        state.showClientIDInput = (state.tutorialSlide === 5);
-        state.showEndpointInput = (state.tutorialSlide === 8);
+        state.showRedirectURI = (state.tutorialSlide === 3);
+        state.showClientIDInput = (state.tutorialSlide === 4);
+        state.showEndpointInput = (state.tutorialSlide === 7);
 
         this.setState(state);
     },
@@ -222,6 +235,10 @@ var AzureCreateAppTutorial = React.createClass({
      * @param  {event} e
      */
     __handleRedirectURIInputClick: function (e) {
+        if (e.cancelable) {
+            e.preventDefault();
+        }
+
         InputSelection.selectAll(e.target);
     },
 
@@ -253,7 +270,7 @@ var AzureCreateAppTutorial = React.createClass({
         } else {
             this.setState({
                 skipTutorial: true,
-                tutorialSlide: undefined
+                tutorialSlide: null
             });
         }
     }
